@@ -247,6 +247,7 @@ class BaseInstalledWidget(QFrame):
 
         @return bool If the game should be considered installed
         """
+        # TODO update this function for origin games. For future it will be always true
         return (self.igame is not None) or self.is_non_asset
 
     @property

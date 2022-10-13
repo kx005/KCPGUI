@@ -12,6 +12,7 @@ from rare.shared import (
     ApiResultsSingleton,
     ImageManagerSingleton,
 )
+from rare.utils import origin as origin_utils
 from rare.widgets.library_layout import LibraryLayout
 from rare.widgets.sliding_stack import SlidingStackedWidget
 from .cloud_save_utils import CloudSaveUtils
@@ -231,10 +232,17 @@ class GamesTab(QStackedWidget):
             self.list_view.layout().addWidget(list_widget)
 
         for game in self.no_assets:
-            if not game.metadata.get("customAttributes", {}).get("ThirdPartyManagedApp", {}).get("value") == "Origin":
+            if not origin_utils.is_origin_game(game):
                 icon_widget, list_widget = self.add_uninstalled_widget(game)
             else:
-                icon_widget, list_widget = self.add_installed_widget(game.app_name)
+                # origin
+                if origin_utils.is_installed(game):
+                    icon_widget, list_widget = self.add_installed_widget(game.app_name)
+                else:
+                    # The origin launch logic is implemented in installed widget
+                    # opening uninstalled game info does not work
+                    icon_widget, list_widget = self.add_installed_widget(game)
+
             if not icon_widget or not list_widget:
                 logger.warning(f"Ignoring {game.app_name} in game list")
                 continue
