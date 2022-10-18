@@ -237,11 +237,13 @@ class GamesTab(QStackedWidget):
             else:
                 # origin
                 if origin_utils.is_installed(game):
+                    logger.info(f"Found installed Origin Game: {game.app_title}")
                     icon_widget, list_widget = self.add_installed_widget(game.app_name)
                 else:
                     # The origin launch logic is implemented in installed widget
                     # opening uninstalled game info does not work
-                    icon_widget, list_widget = self.add_installed_widget(game)
+                    logger.debug(f"Uninstalled Game {game.app_title}, but show as installed")
+                    icon_widget, list_widget = self.add_installed_widget(game.app_name)
 
             if not icon_widget or not list_widget:
                 logger.warning(f"Ignoring {game.app_name} in game list")
